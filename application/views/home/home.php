@@ -4,7 +4,7 @@
 	dialog_support.init("a.modal-dlg");
 </script>
 
-<h3 class="text-center"><?php echo $this->lang->line('common_welcome_message'); ?></h3>
+<h3 class="text-center">Welcome to POS, click a module below to get started</h3>
 
 <div id="home_module_list">
 	<?php

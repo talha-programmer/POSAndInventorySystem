@@ -452,6 +452,25 @@ if(isset($success))
 			</table>
 
 			<div id="payment_details">
+
+                <?php echo form_open($controller_name."/add_total_discount", array('id'=>'add_total_discount_form', 'class'=>'form-horizontal')); ?>
+                <table class="sales_table_100">
+
+                    <?php // Displaying Total Discount?>
+                    <tr>
+                        <td>Total Discount</td>
+                        <td>
+                            <div class="input-group total_discount">
+                                <?php echo form_input(array('name'=>'total_discount', 'class'=>'form-control input-sm', 'value'=>$total_discount, 'tabindex'=>++$tabindex, 'onClick'=>'this.select();')); ?>
+                                <span class="input-group-btn">
+                                                    <?php echo form_checkbox(array('id'=>'discount_toggle', 'name'=>'total_discount_type', 'value'=>1, 'data-toggle'=>"toggle",'data-size'=>'small', 'data-onstyle'=>'success', 'data-on'=>'<b>'.$this->config->item('currency_symbol').'</b>', 'data-off'=>'<b>%</b>', 'checked'=>$total_discount_type)); ?>
+                                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <?php echo form_close();?>
+
 				<?php
 				// Show Complete sale button instead of Add Payment if there is no amount due left
 				if($payments_cover_total)
@@ -497,9 +516,12 @@ if(isset($success))
 				else
 				{
 				?>
+
+
 					<?php echo form_open($controller_name."/add_payment", array('id'=>'add_payment_form', 'class'=>'form-horizontal')); ?>
 						<table class="sales_table_100">
-							<tr>
+
+                            <tr>
 								<td><?php echo $this->lang->line('sales_payment');?></td>
 								<td>
 									<?php echo form_dropdown('payment_type', $payment_options,  $selected_payment_type, array('id'=>'payment_types', 'class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit')); ?>
@@ -913,6 +935,16 @@ $(document).ready(function()
 
 	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"]').change(function() {
 		$(this).parents("tr").prevAll("form:first").submit()
+	});
+
+	/*Total Discount function*/
+    $('[name = "total_discount"],[name="total_discount_type"]').change(function(){
+		$("#add_total_discount_form").submit();
+    });
+
+	/*Fix the toggle button next to total discount input area*/
+	$('.total_discount .btn').each(function(){
+		$(this).css('margin', '0em');
 	});
 
 	$('[name="discount_toggle"]').change(function() {

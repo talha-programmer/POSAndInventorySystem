@@ -383,6 +383,9 @@ class Sales extends Secure_Controller
 		$discount = $this->config->item('default_sales_discount');
 		$discount_type = $this->config->item('default_sales_discount_type');
 
+		$total_discount = $this->session->userdata('total_discount');
+		$total_discount_type = $this->session->userdata('total_discount_type');
+
 		// check if any discount is assigned to the selected customer
 		$customer_id = $this->sale_lib->get_customer();
 		if($customer_id != -1)
@@ -426,6 +429,13 @@ class Sales extends Secure_Controller
 			$price = NULL;
 			$print_option = PRINT_ALL; // Always include in list of items on invoice
 
+			// Adding total discount, it will over-ride all the other discounts
+			if($total_discount > 0.0 && $total_discount_type == 0)
+			{
+				$discount = $total_discount;
+				$discount_type = $total_discount_type;
+			}
+
 			if(!empty($kit_item_id))
 			{
 				if(!$this->sale_lib->add_item($kit_item_id, $quantity, $item_location, $discount, $discount_type, PRICE_MODE_STANDARD))
@@ -451,6 +461,13 @@ class Sales extends Secure_Controller
 		}
 		else
 		{
+			// Adding total discount, it will over-ride all the other discounts
+			if($total_discount > 0.0 && $total_discount_type == 0)
+			{
+				$discount = $total_discount;
+				$discount_type = $total_discount_type;
+			}
+
 			if(!$this->sale_lib->add_item($item_id_or_number_or_item_kit_or_receipt, $quantity, $item_location, $discount, $discount_type, PRICE_MODE_STANDARD))
 			{
 				$data['error'] = $this->lang->line('sales_unable_to_add_item');
@@ -469,7 +486,7 @@ class Sales extends Secure_Controller
 
 		$this->form_validation->set_rules('price', 'lang:sales_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:sales_quantity', 'required|callback_numeric');
-		$this->form_validation->set_rules('discount', 'lang:sales_discount', 'required|callback_numeric');
+		$this->form_validation->set_rules('discount', 'lang:sales_discount', 'callback_numeric|greater_than_equal_to[0]');
 
 		$description = $this->input->post('description');
 		$serialnumber = $this->input->post('serialnumber');
@@ -1050,6 +1067,11 @@ class Sales extends Secure_Controller
 	private function _reload($data = array())
 	{
 		$sale_id = $this->session->userdata('sale_id');
+
+		$data['total_discount'] = $this->session->userdata('total_discount');
+		$data['total_discount_type'] = $this->session->userdata('total_discount_type');
+
+
 		if($sale_id == '')
 		{
 			$sale_id = -1;
@@ -1525,6 +1547,51 @@ class Sales extends Secure_Controller
 		}
 
 		return NULL;
+	}
+
+	public function add_total_discount()
+	{
+		$data = array();
+		$this->form_validation->set_rules('total_discount', 'Total Discount', 'trim|callback_numeric|greater_than_equal_to[0]');
+		if($this->form_validation->run() == False)
+		{
+			$data['error'] = 'Total discount must be a positive number';
+		}
+		else
+		{
+			$total_discount = $this->input->post('total_discount');
+			$total_discount_type = $this->input->post('total_discount_type');
+
+
+			$this->session->set_userdata('total_discount', $total_discount);
+
+			// Removing any discount values set before changing the total discount type
+			if($total_discount_type == 1)
+			{
+				$this->sale_lib->remove_total_discount();
+			}
+
+			if(!isset($total_discount_type))
+			{
+				$total_discount_type = '0';
+			}
+			$this->session->set_userdata('total_discount_type', $total_discount_type);
+
+			// Set the total discount to 0 if no value entered
+			if((!isset($total_discount)) || $total_discount == 0)
+			{
+				$total_discount = 0;
+				$this->sale_lib->add_total_discount($total_discount, $total_discount_type);
+			}
+
+			else if($total_discount > 0.0)
+			{
+				if($this->sale_lib->add_total_discount($total_discount, $total_discount_type) == false)
+					$data['error'] = 'Discount cannot be applied';
+			}
+			
+		}
+		$this->_reload($data);
 	}
 }
 ?>
