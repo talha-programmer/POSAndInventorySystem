@@ -3,7 +3,7 @@
 
 	<div id="footer" >
 		<div class="jumbotron push-spaces">
-			<strong>Point of Sale & Inventory Management System, Provided by: Muhammad Talha-03365706390</strong>
+			<strong><?=$this->lang->line('common_you_are_using_ospos');?></strong>
 		</div>
 	</div>
 </body>

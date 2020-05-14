@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f3530425-44ca-4c02-8231-160f4e09b123" name="Default Changelist" comment="Added total discount feature in sales to add discount on all products and changed some header footers &#10;&#10;Feature Details:&#10;- Add total discount value in all products' discount in case of PERCENT discount.&#10;- Add total discount value in one product's discount in case of CURRENCY discount.&#10;- Total discount will be applied automatically when new products added to cart.&#10;- It will be possible to remove/change discount value of single/multiple &#10;  products after applying total discount.&#10;&#10;Files Modified:&#10;  Sales (Controller):&#10;    Function Added:&#10;      add_total_discount():&#10;&#9;Main function of total discount feature.&#10;    Functions Modified:&#10;      _reload():&#10;        Added total discount and total discount type from session in data array.&#10;      edit_item():&#10;&#9;Remove required rule from discount field validation and added rule for only +ve values.&#10;      add():&#10;&#9;Add total discount to the products when new products are added to cart.&#10;&#10;  Sale_lib (library):&#10;    Functions Added:&#10;      add_total_discount():&#10;&#9;Library function to add total discount in all products of the cart.&#10;      remove_total_discount():&#10;&#9;Remove discount from all products when total discount type changes to CURRENCY type.&#10;      clear_total_discount():&#10;&#9;Clear total discount from session.&#10;    Function Modified:&#10;      clear_all():&#10;&#9;Function call to clear_total_discount() added.&#10;&#10;  register (view):&#10;    Added view for total discount feature and necessary jquery code to submit the total discount form.a">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="f3530425-44ca-4c02-8231-160f4e09b123" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/application/views/items/form_barcode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/controllers/Sales.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/Sales.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/libraries/Sale_lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/libraries/Sale_lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/controllers/Config.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/Config.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/controllers/Items.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/Items.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/controllers/Receivings.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/Receivings.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/language/en-US/common_lang.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/language/en-US/common_lang.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/language/en-US/config_lang.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/language/en-US/config_lang.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/language/en-US/items_lang.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/language/en-US/items_lang.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/language/en-US/receivings_lang.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/language/en-US/receivings_lang.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/language/en-US/sales_lang.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/language/en-US/sales_lang.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/libraries/Receiving_lib.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/libraries/Receiving_lib.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/barcodes/barcode_sheet.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/barcodes/barcode_sheet.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/views/home/home.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/home/home.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/items/manage.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/items/manage.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/views/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/login.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/views/partial/footer.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/partial/footer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/views/partial/header.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/partial/header.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/receivings/receipt.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/receivings/receipt.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/receivings/receiving.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/receivings/receiving.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/sales/invoice.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/sales/invoice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/sales/receipt_default.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/sales/receipt_default.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/sales/receipt_email.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/sales/receipt_email.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/sales/receipt_short.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/sales/receipt_short.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/views/sales/register.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/sales/register.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/dist/opensourcepos.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/dist/opensourcepos.min.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,29 +100,56 @@
       <workItem from="1588451424427" duration="2258000" />
       <workItem from="1588692714539" duration="7286000" />
       <workItem from="1588799095218" duration="4000" />
-      <workItem from="1588938317869" duration="11082000" />
+      <workItem from="1588938317869" duration="17501000" />
+      <workItem from="1589047943001" duration="1746000" />
+      <workItem from="1589135546422" duration="12408000" />
+      <workItem from="1589220580712" duration="9999000" />
+      <workItem from="1589307253758" duration="2037000" />
+      <workItem from="1589380636744" duration="3830000" />
+      <workItem from="1589392509760" duration="10943000" />
+      <workItem from="1589450721637" duration="4547000" />
     </task>
+    <task id="LOCAL-00001" summary="Added total discount feature in sales to add discount on all products and modified some header footers&#10;&#10;Feature Details:&#10;- Add total discount value in all products' discount in case of PERCENT discount.&#10;- Add total discount value in one product's discount in case of CURRENCY discount.&#10;- Total discount will be applied automatically when new products added to cart.&#10;- It will be possible to remove/change discount value of single/multiple &#10;  products after applying total discount.&#10;&#10;Files Modified:&#10;  Sales (Controller):&#10;    Function Added:&#10;      add_total_discount():&#10;&#9;Main function of total discount feature.&#10;    Functions Modified:&#10;      _reload():&#10;        Added total discount and total discount type from session in data array.&#10;      edit_item():&#10;&#9;Remove required rule from discount field validation and added rule for only +ve values.&#10;      add():&#10;&#9;Add total discount to the products when new products are added to cart.&#10;&#10;  Sale_lib (library):&#10;    Functions Added:&#10;      add_total_discount():&#10;&#9;Library function to add total discount in all products of the cart.&#10;      remove_total_discount():&#10;&#9;Remove discount from all products when total discount type changes to CURRENCY type.&#10;      clear_total_discount():&#10;&#9;Clear total discount from session.&#10;    Function Modified:&#10;      clear_all():&#10;&#9;Function call to clear_total_discount() added.&#10;&#10;  register (view):&#10;    Added view for total discount feature and necessary jquery code to submit the total discount form.a&#10;&#10;  login (view)&#10;  home (view)&#10;  header (view)&#10;  footer (view)">
+      <created>1588967634896</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1588967634896</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added total discount feature in sales to add discount on all products and modified some header footers&#10;&#10;Feature Details:&#10;- Add total discount value in all products' discount in case of PERCENT discount.&#10;- Add total discount value in one product's discount in case of CURRENCY discount.&#10;- Total discount will be applied automatically when new products added to cart.&#10;- It will be possible to remove/change discount value of single/multiple &#10;  products after applying total discount.&#10;&#10;Files Modified:&#10;  Sales (Controller):&#10;    Function Added:&#10;      add_total_discount():&#10;&#9;Main function of total discount feature.&#10;    Functions Modified:&#10;      _reload():&#10;        Added total discount and total discount type from session in data array.&#10;      edit_item():&#10;&#9;Remove required rule from discount field validation and added rule for only +ve values.&#10;      add():&#10;&#9;Add total discount to the products when new products are added to cart.&#10;&#10;  Sale_lib (library):&#10;    Functions Added:&#10;      add_total_discount():&#10;&#9;Library function to add total discount in all products of the cart.&#10;      remove_total_discount():&#10;&#9;Remove discount from all products when total discount type changes to CURRENCY type.&#10;      clear_total_discount():&#10;&#9;Clear total discount from session.&#10;    Function Modified:&#10;      clear_all():&#10;&#9;Function call to clear_total_discount() added.&#10;&#10;  register (view):&#10;    Added view for total discount feature and necessary jquery code to submit the total discount form.a&#10;&#10;  login (view)&#10;  home (view)&#10;  header (view)&#10;  footer (view)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added total discount feature in sales to add discount on all products and modified some header footers&#10;&#10;Feature Details:&#10;- Add total discount value in all products' discount in case of PERCENT discount.&#10;- Add total discount value in one product's discount in case of CURRENCY discount.&#10;- Total discount will be applied automatically when new products added to cart.&#10;- It will be possible to remove/change discount value of single/multiple &#10;  products after applying total discount.&#10;&#10;Files Modified:&#10;  Sales (Controller):&#10;    Function Added:&#10;      add_total_discount():&#10;&#9;Main function of total discount feature.&#10;    Functions Modified:&#10;      _reload():&#10;        Added total discount and total discount type from session in data array.&#10;      edit_item():&#10;&#9;Remove required rule from discount field validation and added rule for only +ve values.&#10;      add():&#10;&#9;Add total discount to the products when new products are added to cart.&#10;&#10;  Sale_lib (library):&#10;    Functions Added:&#10;      add_total_discount():&#10;&#9;Library function to add total discount in all products of the cart.&#10;      remove_total_discount():&#10;&#9;Remove discount from all products when total discount type changes to CURRENCY type.&#10;      clear_total_discount():&#10;&#9;Clear total discount from session.&#10;    Function Modified:&#10;      clear_all():&#10;&#9;Function call to clear_total_discount() added.&#10;&#10;  register (view):&#10;    Added view for total discount feature and necessary jquery code to submit the total discount form.a&#10;&#10;  login (view)&#10;  home (view)&#10;  header (view)&#10;  footer (view)" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="0" key="#Dockerfile" timestamp="1584800760063">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="414" y="0" key="#Dockerfile/0.0.1366.728@0.0.1366.728" timestamp="1584800760063" />
-    <state x="363" y="100" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1588692757201">
+    <state x="363" y="100" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1589135550267">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="363" y="100" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1588692757201" />
-    <state x="308" y="0" key="CommitChangelistDialog2" timestamp="1588967274523">
+    <state x="363" y="100" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1589135550267" />
+    <state x="271" y="0" key="CommitChangelistDialog2" timestamp="1588967633255">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="308" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1588967274523" />
+    <state x="271" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1588967633255" />
+    <state x="517" y="287" key="NewPhpFileDialog" timestamp="1588971491640">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="517" y="287" key="NewPhpFileDialog/0.0.1366.728@0.0.1366.728" timestamp="1588971491640" />
     <state x="379" y="96" width="607" height="536" key="find.popup" timestamp="1588345378433">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="379" y="96" width="607" height="536" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1588345378433" />
+    <state x="346" y="49" width="672" height="678" key="search.everywhere.popup" timestamp="1589403969203">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="346" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1589403969203" />
   </component>
 </project>

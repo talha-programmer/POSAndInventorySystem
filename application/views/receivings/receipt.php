@@ -152,5 +152,10 @@
 		<img src='data:image/png;base64,<?php echo $barcode; ?>' /><br>
 		<?php echo $receiving_id; ?>
 	</div>
+
+    <br><br>
+    <div class="hidden print_show" id="promotinal_message" style="text-align: center; position: fixed; bottom: 0;" >
+        <?=$this->lang->line('common_software_provided_by');?>
+    </div>
 </div>
 <?php $this->load->view("partial/footer"); ?>

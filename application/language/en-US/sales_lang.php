@@ -132,6 +132,7 @@ $lang["sales_sale_for_customer"] = "Customer:";
 $lang["sales_sale_time"] = "Time";
 $lang["sales_sales_tax"] = "Sales Tax";
 $lang["sales_taxed_ind"] = "T";
+$lang["sales_total_discount"] = "Total Discount";
 $lang["sales_select_customer"] = "Select Customer";
 $lang["sales_send_invoice"] = "Send Invoice";
 $lang["sales_send_quote"] = "Send Quote";

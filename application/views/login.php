@@ -47,7 +47,7 @@
 			</div>
 		<?php echo form_close(); ?>
 
-        <h1>Point of Sale & Inventory Management</h1>
+        <h1><?=$this->lang->line('common_app_name')?></h1>
 
 	</div>
 </body>

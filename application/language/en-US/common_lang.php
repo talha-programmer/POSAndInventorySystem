@@ -2,6 +2,7 @@
 
 $lang["common_address_1"] = "Address 1";
 $lang["common_address_2"] = "Address 2";
+$lang["common_app_name"] = "POS & Inventory Management System";
 $lang["common_city"] = "City";
 $lang["common_close"] = "Close";
 $lang["common_comments"] = "Comments";
@@ -58,6 +59,7 @@ $lang["common_return_policy"] = "Return Policy";
 $lang["common_search"] = "Search";
 $lang["common_search_options"] = "Search options";
 $lang["common_searched_for"] = "Searched for";
+$lang["common_software_provided_by"] = "Software Provided by: Talha (03365706390)";
 $lang["common_state"] = "State";
 $lang["common_submit"] = "Submit";
 $lang["common_total_spent"] = "Total Spent";
@@ -65,6 +67,6 @@ $lang["common_unknown"] = "Unknown";
 $lang["common_view_recent_sales"] = "View Recent Sales";
 $lang["common_website"] = "website";
 $lang["common_welcome"] = "Welcome";
-$lang["common_welcome_message"] = "Welcome to OSPOS, click a module below to get started.";
-$lang["common_you_are_using_ospos"] = "You are using Open Source Point Of Sale version";
+$lang["common_welcome_message"] = "Welcome to POS! select from the following options to get started";
+$lang["common_you_are_using_ospos"] = "Point of Sale & Inventory Management System, Provided by: Talha (0336-5706390)";
 $lang["common_zip"] = "Postal Code";

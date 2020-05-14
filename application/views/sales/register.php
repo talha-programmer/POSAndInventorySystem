@@ -458,7 +458,7 @@ if(isset($success))
 
                     <?php // Displaying Total Discount?>
                     <tr>
-                        <td>Total Discount</td>
+                        <td><?php echo $this->lang->line('sales_total_discount');?></td>
                         <td>
                             <div class="input-group total_discount">
                                 <?php echo form_input(array('name'=>'total_discount', 'class'=>'form-control input-sm', 'value'=>$total_discount, 'tabindex'=>++$tabindex, 'onClick'=>'this.select();')); ?>

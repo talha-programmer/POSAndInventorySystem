@@ -344,10 +344,27 @@ if (isset($success))
 				else
 				{
 				?>
+                    <div id="payment_details" >
+                        <?php echo form_open($controller_name."/add_total_discount", array('id'=>'add_total_discount_form', 'class'=>'form-horizontal')); ?>
+                        <table class="sales_table_100">
+                            <?php // Displaying Total Discount?>
+                            <tr>
+                                <td><?php echo $this->lang->line('receivings_total_discount'); ?></td>
+                                <td>
+                                    <div class="input-group total_discount">
+                                        <?php echo form_input(array('name'=>'total_discount', 'class'=>'form-control input-sm', 'value'=>$total_discount, 'tabindex'=>++$tabindex, 'onClick'=>'this.select();')); ?>
+                                        <span class="input-group-btn">
+                                            <?php echo form_checkbox(array('id'=>'discount_toggle', 'name'=>'total_discount_type', 'value'=>1, 'data-toggle'=>"toggle",'data-size'=>'small', 'data-onstyle'=>'success', 'data-on'=>'<b>'.$this->config->item('currency_symbol').'</b>', 'data-off'=>'<b>%</b>', 'checked'=>$total_discount_type)); ?>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <?php echo form_close();?>
+                    </div>
+
 					<?php echo form_open($controller_name."/complete", array('id'=>'finish_receiving_form', 'class'=>'form-horizontal')); ?>
 						<div class="form-group form-group-sm">
-							<label id="comment_label" for="comment"><?php echo $this->lang->line('common_comments'); ?></label>
-							<?php echo form_textarea(array('name'=>'comment', 'id'=>'comment', 'class'=>'form-control input-sm', 'value'=>$comment, 'rows'=>'4'));?>
 							<div id="payment_details" >
 								<table class="sales_table_100" >
 									<tr>
@@ -384,7 +401,10 @@ if (isset($success))
 								</table>
 							</div>
 
-							<div class='btn btn-sm btn-danger pull-left' id='cancel_receiving_button'><span class="glyphicon glyphicon-remove">&nbsp</span><?php echo $this->lang->line('receivings_cancel_receiving') ?></div>
+                            <label id="comment_label" for="comment"><?php echo $this->lang->line('common_comments'); ?></label>
+                            <?php echo form_textarea(array('name'=>'comment', 'id'=>'comment', 'class'=>'form-control input-sm', 'value'=>$comment, 'rows'=>'4'));?>
+
+                            <div class='btn btn-sm btn-danger pull-left' id='cancel_receiving_button'><span class="glyphicon glyphicon-remove">&nbsp</span><?php echo $this->lang->line('receivings_cancel_receiving') ?></div>
 							
 							<div class='btn btn-sm btn-success pull-right' id='finish_receiving_button'><span class="glyphicon glyphicon-ok">&nbsp</span><?php echo $this->lang->line('receivings_complete_receiving') ?></div>
 						</div>
@@ -466,6 +486,17 @@ $(document).ready(function()
 	{
 		$(this).attr('value',"<?php echo $this->lang->line('receivings_start_typing_supplier_name'); ?>");
 	});
+
+    /*Total Discount function*/
+    $('[name = "total_discount"],[name="total_discount_type"]').change(function(){
+        console.log("function called");
+        $("#add_total_discount_form").submit();
+    });
+
+    /*Fix the toggle button next to total discount input area*/
+    $('.total_discount .btn').each(function(){
+        $(this).css('margin', '0em');
+    });
 
 	$("#finish_receiving_button").click(function()
 	{

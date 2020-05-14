@@ -383,8 +383,16 @@ class Items extends Secure_Controller
 		$this->load->view('items/form_count_details', $data);
 	}
 
-	public function generate_barcodes($item_ids)
+	public function get_barcode_quantity()
 	{
+		$this->load->view('items/form_barcode');
+	}
+
+
+	public function generate_barcodes()
+	{
+		$item_ids = $this->input->post('item_ids');
+		$barcode_quantity = $this->input->post('barcode_quantity');
 		$this->load->library('barcode_lib');
 
 		$item_ids = explode(':', $item_ids);
@@ -392,7 +400,7 @@ class Items extends Secure_Controller
 		$config = $this->barcode_lib->get_barcode_config();
 
 		$data['barcode_config'] = $config;
-
+		$data['barcode_quantity'] = $barcode_quantity;
 		// check the list of items to see if any item_number field is empty
 		foreach($result as &$item)
 		{

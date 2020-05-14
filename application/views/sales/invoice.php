@@ -238,9 +238,13 @@ $(document).ready(function()
 	<div id="terms">
 		<div id="sale_return_policy">
 			<h5>
+                <?php if($this->config->item('payment_message')): ?>
 				<textarea rows="5" cols="6"><?php echo nl2br($this->config->item('payment_message')); ?></textarea>
+                <?php endif;?>
+                <?php if($comments):?>
 				<textarea rows="5" cols="6"><?php echo empty($comments) ? '' : $this->lang->line('sales_comments') . ': ' . $comments; ?></textarea>
-				<textarea rows="5" cols="6"><?php echo $this->config->item('invoice_default_comments'); ?></textarea>
+				<?php endif;?>
+                <textarea rows="5" cols="6"><?php echo $this->config->item('invoice_default_comments'); ?></textarea>
 			</h5>
 			<?php echo nl2br($this->config->item('return_policy')); ?>
 		</div>
@@ -249,6 +253,10 @@ $(document).ready(function()
 			<?php echo $sale_id; ?>
 		</div>
 	</div>
+
+    <div class="hidden print_show" id="promotinal_message" style="position: fixed; bottom: 0;" >
+        <?=$this->lang->line('common_software_provided_by');?>
+    </div>
 </div>
 
 <script type="text/javascript">

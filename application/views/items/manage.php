@@ -3,14 +3,6 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
-    $('#generate_barcodes').click(function()
-    {
-        window.open(
-            'index.php/items/generate_barcodes/'+table_support.selected_ids().join(':'),
-            '_blank' // <- This is what makes it open in a new window.
-        );
-    });
-	
 	// when any filter is clicked and the dropdown window is closed
 	$('#filters').on('hidden.bs.select', function(e)
 	{
@@ -78,7 +70,8 @@ $(document).ready(function()
 				title='<?php echo $this->lang->line('items_edit_multiple_items'); ?>'>
             <span class="glyphicon glyphicon-edit">&nbsp</span><?php echo $this->lang->line("items_bulk_edit"); ?>
         </button>
-        <button id="generate_barcodes" class="btn btn-default btn-sm print_hide" data-href='<?php echo site_url($controller_name."/generate_barcodes"); ?>' title='<?php echo $this->lang->line('items_generate_barcodes');?>'>
+        <button id="generate_barcodes" class="btn btn-default btn-sm modal-dlg print_hide", data-btn-submit = '<?php echo $this->lang->line('common_submit') ?>', data-href='<?php echo site_url($controller_name."/get_barcode_quantity"); ?>'
+                title='<?php echo $this->lang->line('items_generate_barcodes');?>'>
             <span class="glyphicon glyphicon-barcode">&nbsp</span><?php echo $this->lang->line("items_generate_barcodes"); ?>
         </button>
         <?php echo form_input(array('name'=>'daterangepicker', 'class'=>'form-control input-sm', 'id'=>'daterangepicker')); ?>

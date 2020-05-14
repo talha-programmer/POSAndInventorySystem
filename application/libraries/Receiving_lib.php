@@ -362,6 +362,7 @@ class Receiving_lib
 		$this->remove_supplier();
 		$this->clear_comment();
 		$this->clear_reference();
+		$this->clear_total_discount();
 	}
 
 	public function get_item_total($quantity, $price, $discount, $discount_type, $receiving_quantity)
@@ -387,6 +388,55 @@ class Receiving_lib
 		}
 		
 		return $total;
+	}
+
+	public function add_total_discount($total_discount, $total_discount_type)
+	{
+		if($total_discount >= 100 && $total_discount_type == 0)
+			return false;
+		$items = $this->get_cart();
+		$discount_applied = false;
+		foreach ($items as $item)
+		{
+			$line = $item['line'];
+			if($total_discount_type == 1 && $total_discount > 0.0)
+			{
+				if($item['total'] > $total_discount)
+				{
+					$items[$line]['discount'] = $total_discount;
+					$items[$line]['discount_type'] = $total_discount_type;
+					$items[$line]['discounted_total'] = $this->get_item_total($item['quantity'], $item['price'], $total_discount, $total_discount_type, TRUE);
+					$discount_applied = true;
+					break;
+				}
+				else
+					continue;
+			}
+			$items[$line]['discount'] = $total_discount;
+			$items[$line]['discount_type'] = $total_discount_type;
+			$items[$line]['discounted_total'] = $this->get_item_total($item['quantity'], $item['price'], $total_discount, $total_discount_type, TRUE);
+			$discount_applied = true;
+		}
+		$this->set_cart($items);
+		return $discount_applied;
+	}
+
+	public function remove_total_discount()
+	{
+		$items = $this->get_cart();
+		foreach ($items as $item)
+		{
+			$line = $item['line'];
+			$items[$line]['discount'] = 0;
+			$items[$line]['discounted_total'] = $this->get_item_total($item['quantity'], $item['price'], $total_discount, $total_discount_type, TRUE);
+		}
+		$this->set_cart($items);
+	}
+
+	public function clear_total_discount()
+	{
+		$this->CI->session->unset_userdata('total_discount');
+		$this->CI->session->unset_userdata('total_discount_type');
 	}
 }
 

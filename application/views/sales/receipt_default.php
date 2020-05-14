@@ -228,4 +228,8 @@
 		<img src='data:image/png;base64,<?php echo $barcode; ?>' /><br>
 		<?php echo $sale_id; ?>
 	</div>
+
+    <div class="hidden print_show" id="promotinal_message" style="position: fixed; bottom: 0;" >
+        <?=$this->lang->line('common_software_provided_by');?>
+    </div>
 </div>

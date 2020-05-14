@@ -345,6 +345,9 @@ class Receivings extends Secure_Controller
 		$data['reference'] = $this->receiving_lib->get_reference();
 		$data['payment_options'] = $this->Receiving->get_payment_options();
 
+		$data['total_discount'] = $this->session->userdata('total_discount');
+		$data['total_discount_type'] = $this->session->userdata('total_discount_type');
+
 		$supplier_id = $this->receiving_lib->get_supplier();
 		$supplier_info = '';
 		if($supplier_id != -1)
@@ -401,6 +404,51 @@ class Receivings extends Secure_Controller
 		$this->receiving_lib->clear_all();
 
 		$this->_reload();
+	}
+
+	public function add_total_discount()
+	{
+		$data = array();
+		$this->form_validation->set_rules('total_discount', 'Total Discount', 'trim|callback_numeric|greater_than_equal_to[0]');
+		if($this->form_validation->run() == False)
+		{
+			$data['error'] = 'Total discount must be a positive number';
+		}
+		else
+		{
+			$total_discount = $this->input->post('total_discount');
+			$total_discount_type = $this->input->post('total_discount_type');
+
+
+			$this->session->set_userdata('total_discount', $total_discount);
+
+			// Removing any discount values set before changing the total discount type
+			if($total_discount_type == 1)
+			{
+				$this->receiving_lib->remove_total_discount();
+			}
+
+			if(!isset($total_discount_type))
+			{
+				$total_discount_type = '0';
+			}
+			$this->session->set_userdata('total_discount_type', $total_discount_type);
+
+			// Set the total discount to 0 if no value entered
+			if((!isset($total_discount)) || $total_discount == 0)
+			{
+				$total_discount = 0;
+				$this->receiving_lib->add_total_discount($total_discount, $total_discount_type);
+			}
+
+			else if($total_discount > 0.0)
+			{
+				if($this->receiving_lib->add_total_discount($total_discount, $total_discount_type) == false)
+					$data['error'] = 'Discount cannot be applied';
+			}
+
+		}
+		$this->_reload($data);
 	}
 }
 ?>
