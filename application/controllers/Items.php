@@ -27,7 +27,8 @@ class Items extends Secure_Controller
 			'no_description' => $this->lang->line('items_no_description_items'),
 			'search_custom' => $this->lang->line('items_search_attributes'),
 			'is_deleted' => $this->lang->line('items_is_deleted'),
-			'temporary' => $this->lang->line('items_temp'));
+			'temporary' => $this->lang->line('items_temp'),
+			'pack_item'=>$this->lang->line('items_pack'));
 
 		$this->load->view('items/manage', $data);
 	}
@@ -181,7 +182,7 @@ class Items extends Secure_Controller
 		echo json_encode($result);
 	}
 
-	public function view($item_id = -1)
+	public function view($item_id = -1, $pack_item = false)
 	{
 		if($item_id == -1)
 		{
@@ -332,6 +333,11 @@ class Items extends Secure_Controller
 		else
 		{
 			$data['selected_low_sell_item'] = '';
+		}
+
+		if($pack_item || $item_info->item_type == ITEM_PACK)
+		{
+			$data['pack_item'] = true;
 		}
 
 		$this->load->view('items/form', $data);
@@ -518,6 +524,35 @@ class Items extends Secure_Controller
 			'hsn_code' => $this->input->post('hsn_code') == NULL ? '' : $this->input->post('hsn_code')
 		);
 
+		// Getting pieces per pack and changing prices and quantity for saving as single item
+		$pieces_per_pack = $this->input->post('pieces');
+		if($pieces_per_pack)
+		{
+			$item_data['item_type'] = ITEM_PACK;
+			if(strstr($item_data['name'],'|'.$this->lang->line('items_pack_title'))==FALSE)
+			{
+				$item_data['name'] = $item_data['name'] . " |" . $this->lang->line('items_pack_title');
+			}
+
+			$item_info = $this->Item->get_info($item_id);
+			foreach(get_object_vars($item_info) as $property => $value)
+			{
+				$item_info->$property = $this->xss_clean($value);
+			}
+			if($item_info->cost_price != $item_data['cost_price'])
+			{
+				$item_data['cost_price'] = $item_data['cost_price'] / $pieces_per_pack;
+			}
+			if($item_info->unit_price != $item_data['unit_price'])
+			{
+				$item_data['unit_price'] = $item_data['unit_price'] / $pieces_per_pack;
+			}
+
+
+			$item_data['qty_per_pack'] = $pieces_per_pack;
+			$item_data['receiving_quantity'] = parse_decimals($pieces_per_pack);
+		}
+
 		if($item_data['item_type'] == ITEM_TEMP)
 		{
 			$item_data['stock_type'] = HAS_NO_STOCK;
@@ -581,6 +616,7 @@ class Items extends Secure_Controller
 			foreach($stock_locations as $location)
 			{
 				$updated_quantity = parse_decimals($this->input->post('quantity_' . $location['location_id']));
+
 				if($item_data['item_type'] == ITEM_TEMP)
 				{
 					$updated_quantity = 0;
@@ -593,6 +629,13 @@ class Items extends Secure_Controller
 				$item_quantity = $this->Item_quantity->get_item_quantity($item_id, $location['location_id']);
 				if($item_quantity->quantity != $updated_quantity || $new_item)
 				{
+					if($pieces_per_pack > 0)
+					{
+						$quantity_pieces = parse_decimals($this->input->post('quantity_pieces_' . $location['location_id']));
+						$updated_quantity *= $pieces_per_pack;
+						$updated_quantity += $quantity_pieces;
+						$location_detail['quantity'] = $updated_quantity;
+					}
 					$success &= $this->Item_quantity->save($location_detail, $item_id, $location['location_id']);
 
 					$inv_data = array(

@@ -1549,7 +1549,6 @@ class Reports extends Secure_Controller
 				'item_number' => $row['item_number'],
 				'category' => $row['category'],
 				'quantity' => to_quantity_decimals($row['quantity']),
-				'low_sell_quantity' => to_quantity_decimals($row['low_sell_quantity']),
 				'reorder_level' => to_quantity_decimals($row['reorder_level']),
 				'location_name' => $row['location_name'],
 				'cost_price' => to_currency($row['cost_price']),

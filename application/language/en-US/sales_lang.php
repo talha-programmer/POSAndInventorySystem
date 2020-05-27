@@ -100,6 +100,7 @@ $lang["sales_none_selected"] = "You have not selected any Sale(s) to delete.";
 $lang["sales_nontaxed_ind"] = " ";
 $lang["sales_not_authorized"] = "This action is not authorized.";
 $lang["sales_one_or_multiple"] = "Sale(s)";
+$lang["sales_pack"] = "Pack";
 $lang["sales_payment"] = "Payment Type";
 $lang["sales_payment_amount"] = "Amount";
 $lang["sales_payment_not_cover_total"] = "Payment Amount must be greater than or equal to Total.";

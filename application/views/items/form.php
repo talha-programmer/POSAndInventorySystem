@@ -46,11 +46,27 @@
 			</div>
 		</div>
 
-		<div id="attributes">
-			<script type="text/javascript">
-				$('#attributes').load('<?php echo site_url("items/attributes/$item_info->item_id");?>');
-			</script>
-		</div>
+        <?php if($pack_item || $item_info->item_type == ITEM_PACK):?>
+            <div class="form-group form-group-sm">
+                <?php echo form_label($this->lang->line('items_pack_pieces'), 'pieces', array('class'=>'required control-label col-xs-3')); ?>
+                <div class='col-xs-8'>
+                    <div class="input-group">
+                        <?php echo form_input(array(
+                                'name'=>'pieces',
+                                'id'=>'pieces',
+                                'class'=>'form-control input-sm',
+                                'value'=>$item_info->qty_per_pack)
+                        );?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <div id="attributes">
+            <script type="text/javascript">
+                $('#attributes').load('<?php echo site_url("items/attributes/$item_info->item_id");?>');
+            </script>
+        </div>
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_stock_type'), 'stock_type', !empty($basic_version) ? array('class'=>'required control-label col-xs-3') : array('class'=>'control-label col-xs-3')); ?>
@@ -160,7 +176,7 @@
 							'name'=>'cost_price',
 							'id'=>'cost_price',
 							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($item_info->cost_price))
+							'value'=>to_currency_no_money($item_info->cost_price)*$item_info->qty_per_pack)
 							);?>
 					<?php if (currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -180,7 +196,7 @@
 							'name'=>'unit_price',
 							'id'=>'unit_price',
 							'class'=>'form-control input-sm',
-							'value'=>to_currency_no_money($item_info->unit_price))
+							'value'=>to_currency_no_money($item_info->unit_price)*$item_info->qty_per_pack)
 							);?>
 					<?php if (currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -276,17 +292,48 @@
 		<?php
 		foreach($stock_locations as $key=>$location_detail)
 		{
-		?>
+            $total_quantity = abs($location_detail['quantity']);
+            $qty_per_pack = $item_info->qty_per_pack;
+            $packs = floor($total_quantity / $qty_per_pack);
+            $pieces = $total_quantity - ($packs * $qty_per_pack); // pieces other than packs
+            if($location_detail['quantity'] < 0)
+            {
+                $packs *= -1;
+                $pieces *= -1;
+            }
+
+            ?>
 			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('items_quantity').' '.$location_detail['location_name'], 'quantity_' . $key, array('class'=>'required control-label col-xs-3')); ?>
 				<div class='col-xs-4'>
-					<?php echo form_input(array(
-							'name'=>'quantity_' . $key,
-							'id'=>'quantity_' . $key,
-							'class'=>'required quantity form-control',
-							'value'=>isset($item_info->item_id) ? to_quantity_decimals($location_detail['quantity']) : to_quantity_decimals(0))
-							);?>
+                    <div class="input-group input-group-sm">
+                        <?php echo form_input(array(
+                                'name'=>'quantity_' . $key,
+                                'id'=>'quantity_' . $key,
+                                'class'=>'required quantity form-control',
+                                'value'=>isset($item_info->item_id) ? $packs : to_quantity_decimals(0))
+                                );
+                            if($item_info->item_type == ITEM_PACK || $pack_item): ?>
+                                <span class="input-group-addon input-sm"><b>Packs</b></span>
+                            <?php endif; ?>
+                    </div>
 				</div>
+
+                <?php if($item_info->item_type == ITEM_PACK || $pack_item):  ?>
+                    <div class='col-xs-4'>
+                        <div class="input-group input-group-sm">
+                            <?php echo form_input(array(
+                                    'name'=>'quantity_pieces_' . $key,
+                                    'id'=>'quantity_pieces_' . $key,
+                                    'class'=>'quantity form-control',
+                                    'value'=>isset($item_info->item_id) ? $pieces : to_quantity_decimals(0))
+                            );?>
+                            <span class="input-group-addon input-sm"><b>Pieces</b></span>
+                        </div>
+                    </div>
+
+                <?php endif;?>
+
 			</div>
 		<?php
 		}
@@ -559,6 +606,13 @@ $(document).ready(function()
 							required: true,
 							remote: "<?php echo site_url($controller_name . '/check_numeric')?>"
 						},
+                    <?php if($pack_item):?>
+                    pieces:
+                        {
+                            required: true,
+                            number: true
+                        },
+                    <?php endif; ?>
 			<?php
 			foreach($stock_locations as $key=>$location_detail)
 			{
@@ -593,6 +647,7 @@ $(document).ready(function()
 				name: "<?php echo $this->lang->line('items_name_required'); ?>",
 					item_number: "<?php echo $this->lang->line('items_item_number_duplicate'); ?>",
 				category: "<?php echo $this->lang->line('items_category_required'); ?>",
+                pieces:"<?php echo $this->lang->line('items_pack_pieces_required'); ?>",
 				cost_price:
 				{
 					required: "<?php echo $this->lang->line('items_cost_price_required'); ?>",

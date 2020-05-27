@@ -59,10 +59,14 @@
 		<?php
 		foreach($cart as $line=>$item)
 		{
+            $quantity = to_quantity_decimals($item['extended_quantity']);
+            $pack_quantity = to_quantity_decimals($item['pack_quantity']);
+            // Quantity stored is whole quantity, dividing with packs for displaying packs and quantity separately
+            $quantity /= $pack_quantity
 		?>
 			<tr>
 				<td><?php echo ucfirst($item['name'] . ' ' . $item['attribute_values']); ?></td>
-				<td><?php echo to_quantity_decimals($item['quantity']); ?></td>
+				<td><?php echo $quantity . ' x '. $pack_quantity; ?></td>
 				<td class="total-value"><?php echo to_currency($item[($this->config->item('receipt_show_total_discount') ? 'total' : 'discounted_total')]); ?></td>
 			</tr>
 			<tr>
@@ -84,8 +88,8 @@
 				?>
 			</tr>
 			<?php
-			if($item['discount'] > 0)
-			{
+            if(FALSE)       // $item['discount'] > 0, Removed this whole row by changing condition
+            {
 			?>
 				<tr>
 					<?php

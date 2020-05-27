@@ -88,6 +88,10 @@
 		html {
 			overflow: auto;
 		}
+        .full-height {
+            min-height: 58.5vh
+        }
+
 	</style>
 </head>
 
@@ -139,6 +143,6 @@
 			</div>
 		</div>
 
-		<div class="container">
+		<div class="container full-height">
 			<div class="row">
 

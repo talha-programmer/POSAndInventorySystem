@@ -78,11 +78,15 @@
 		{
 			if($item['print_option'] == PRINT_YES)
 			{
+                $quantity = to_quantity_decimals($item['extended_quantity']);
+                $pack_quantity = to_quantity_decimals($item['pack_quantity']);
+                // Quantity stored is whole quantity, dividing with packs for displaying packs and quantity separately
+                $quantity /= $pack_quantity
 			?>
 				<tr class="item-row">
 					<td><?php echo $item['item_number']; ?></td>
 					<td class="item-name"><?php echo $item['name']; ?></td>
-					<td><?php echo to_quantity_decimals($item['quantity']); ?></td>
+					<td><?php echo $quantity . ' x '. $pack_quantity; ?></td>
 					<td><?php echo to_currency($item['price']); ?></td>
 					<td><?php echo ($item['discount_type']==FIXED)?to_currency($item['discount']):$item['discount'] . '%';?></td>
 					<td class="total-line"><?php echo to_currency($item['discounted_total']); ?></td>

@@ -110,6 +110,7 @@ if(isset($success))
 				<th style="width: 30%;"><?php echo $this->lang->line('sales_item_name'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_price'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
+                <th style="width:10%;"><?php echo $this->lang->line('sales_pack'); ?></th>
 				<th style="width: 15%;"><?php echo $this->lang->line('sales_discount'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_total'); ?></th>
 				<th style="width: 5%;"><?php echo $this->lang->line('sales_update'); ?></th>
@@ -122,7 +123,7 @@ if(isset($success))
 			{
 			?>
 				<tr>
-					<td colspan='8'>
+					<td colspan='9'>
 						<div class='alert alert-dismissible alert-info'><?php echo $this->lang->line('sales_no_items_in_cart'); ?></div>
 					</td>
 				</tr>
@@ -194,6 +195,8 @@ if(isset($success))
 								}
 								?>
 							</td>
+
+                            <td><?php echo form_dropdown('pack_quantity', $item['pack_quantity_choices'], $item['pack_quantity'] , array('class'=>'form-control input-sm')); ?></td>
 
 							<td>
 								<div class="input-group">
@@ -933,7 +936,7 @@ $(document).ready(function()
 		}
 	}
 
-	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"]').change(function() {
+	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"],[name="pack_quantity"]').change(function() {
 		$(this).parents("tr").prevAll("form:first").submit()
 	});
 

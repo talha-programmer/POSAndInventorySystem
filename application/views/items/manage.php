@@ -49,10 +49,29 @@ $(document).ready(function()
 });
 </script>
 
+<div class="row print_hide">
+    <h3>Important Information</h3>
+    <h4>Pack Items</h4>
+    <ul style="margin-left: 20px;">
+        <li>Contain items that are sold by packs and single pieces. For example: Medicines, Chocolates etc.</li>
+        <li>Add pack's price in the form. The price for single piece will be automatically added in the item table.</li>
+        <li>Their Quantity counts are displayed by packs and pieces in the form and by single pieces in the table.</li>
+        <li>'Update Inventory form' &nbsp; <a><span class="glyphicon glyphicon-pushpin"></span></a> &nbsp; updates the quantity of pack items only by pieces.</li>
+        <li>'Update Item form' &nbsp; <a><span class="glyphicon glyphicon-edit"></span></a> &nbsp; updates the quantity of pack items by packs and pieces.</li>
+    </ul>
+
+
+</div>
+
 <div id="title_bar" class="btn-toolbar print_hide">
     <button class='btn btn-info btn-sm pull-right modal-dlg' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/csv_import"); ?>'
             title='<?php echo $this->lang->line('items_import_items_csv'); ?>'>
         <span class="glyphicon glyphicon-import">&nbsp</span><?php echo $this->lang->line('common_import_csv'); ?>
+    </button>
+
+    <button class='btn btn-info btn-sm pull-right modal-dlg' data-btn-new='<?php echo $this->lang->line('common_new') ?>' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/view/-1/true"); ?>'
+            title='<?=$this->lang->line('items_pack_new'); ?>'>
+        <span class="glyphicon glyphicon-tags">&nbsp</span><?=$this->lang->line('items_pack_new')?>
     </button>
 
     <button class='btn btn-info btn-sm pull-right modal-dlg' data-btn-new='<?php echo $this->lang->line('common_new') ?>' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/view"); ?>'

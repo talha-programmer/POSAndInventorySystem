@@ -500,16 +500,9 @@ class Sale extends CI_Model
 			{
 				return $this->exists($pieces[1]);
 			}
-			elseif($this->config->item('invoice_enable') == TRUE)
-			{
-				$sale_info = $this->get_sale_by_invoice_number($receipt_sale_id);
-				if($sale_info->num_rows() > 0)
-				{
-					$receipt_sale_id = 'POS ' . $sale_info->row()->sale_id;
+			// Deleted this code because it was causing error:
+			// 	while adding items in return mode, complete sale was added by invoice number due to the invoice number same as item id
 
-					return TRUE;
-				}
-			}
 		}
 
 		return FALSE;
@@ -688,7 +681,8 @@ class Sale extends CI_Model
 				'line'				=> $item['line'],
 				'description'		=> character_limiter($item['description'], 255),
 				'serialnumber'		=> character_limiter($item['serialnumber'], 30),
-				'quantity_purchased'=> $item['quantity'],
+				'quantity_purchased'=> $item['extended_quantity'],
+				'pack_qty_purchased'=> $item['pack_quantity'],
 				'discount'			=> $item['discount'],
 				'discount_type'		=> $item['discount_type'],
 				'item_cost_price'	=> $item['cost_price'],
@@ -703,7 +697,7 @@ class Sale extends CI_Model
 			{
 				// Update stock quantity if item type is a standard stock item and the sale is a standard sale
 				$item_quantity = $this->Item_quantity->get_item_quantity($item['item_id'], $item['item_location']);
-				$this->Item_quantity->save(array('quantity'	=> $item_quantity->quantity - $item['quantity'],
+				$this->Item_quantity->save(array('quantity'	=> $item_quantity->quantity - $item['extended_quantity'],
 					'item_id'		=> $item['item_id'],
 					'location_id'	=> $item['item_location']), $item['item_id'], $item['item_location']);
 
@@ -722,7 +716,7 @@ class Sale extends CI_Model
 					'trans_user'		=> $employee_id,
 					'trans_location'	=> $item['item_location'],
 					'trans_comment'		=> $sale_remarks,
-					'trans_inventory'	=> -$item['quantity']
+					'trans_inventory'	=> -$item['extended_quantity']
 				);
 				$this->Inventory->insert($inv_data);
 			}
@@ -915,6 +909,7 @@ class Sale extends CI_Model
 			serialnumber,
 			line,
 			quantity_purchased,
+			pack_qty_purchased,
 			item_cost_price,
 			item_unit_price,
 			discount,

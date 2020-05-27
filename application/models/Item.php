@@ -7,6 +7,7 @@ define('ITEM', 0);
 define('ITEM_KIT', 1);
 define('ITEM_AMOUNT_ENTRY', 2);
 define('ITEM_TEMP', 3);
+define('ITEM_PACK', 4);
 
 define('PRINT_ALL', 0);
 define('PRINT_PRICED', 1);
@@ -220,13 +221,17 @@ class Item extends CI_Model
 		{
 			$this->db->where('items.description', '');
 		}
+		if($filters['pack_item'] != FALSE)
+		{
+			$this->db->where('items.item_type', ITEM_PACK);
+		}
 		if($filters['temporary'] != FALSE)
 		{
 			$this->db->where('items.item_type', ITEM_TEMP);
 		}
-		else
+		else if($filters['temporary'] == FALSE && $filters['pack_item'] == FALSE)
 		{
-			$non_temp = array(ITEM, ITEM_KIT, ITEM_AMOUNT_ENTRY);
+			$non_temp = array(ITEM, ITEM_KIT, ITEM_AMOUNT_ENTRY,ITEM_PACK);
 			$this->db->where_in('items.item_type', $non_temp);
 		}
 
@@ -572,7 +577,7 @@ class Item extends CI_Model
 	public function get_search_suggestions($search, $filters = array('is_deleted' => FALSE, 'search_custom' => FALSE), $unique = FALSE, $limit = 25)
 	{
 		$suggestions = array();
-		$non_kit = array(ITEM, ITEM_AMOUNT_ENTRY);
+		$non_kit = array(ITEM, ITEM_AMOUNT_ENTRY,ITEM_PACK);
 
 		$this->db->select($this->get_search_suggestion_format('item_id, name, pack_name'));
 		$this->db->from('items');

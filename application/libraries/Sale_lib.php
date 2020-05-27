@@ -464,17 +464,17 @@ class Sale_lib
 				$item_count++;
 				$total_units += $item['quantity'];
 			}
-			$discount_amount = $this->get_item_discount($item['quantity'], $item['price'], $item['discount'], $item['discount_type']);
+			$discount_amount = $this->get_item_discount($item['extended_quantity'], $item['price'], $item['discount'], $item['discount_type']);
 			$total_discount = bcadd($total_discount, $discount_amount);
 
-			$extended_amount = $this->get_extended_amount($item['quantity'], $item['price']);
-			$extended_discounted_amount = $this->get_extended_amount($item['quantity'], $item['price'], $discount_amount);
+			$extended_amount = $this->get_extended_amount($item['extended_quantity'], $item['price']);
+			$extended_discounted_amount = $this->get_extended_amount($item['extended_quantity'], $item['price'], $discount_amount);
 			$prediscount_subtotal= bcadd($prediscount_subtotal, $extended_amount);
 			$total = bcadd($total, $extended_discounted_amount);
 
 			if($this->CI->config->item('tax_included'))
 			{
-				$subtotal = bcadd($subtotal, $this->get_extended_total_tax_exclusive($item['item_id'], $extended_discounted_amount, $item['quantity'], $item['price'], $item['discount'],$item['discount_type']));
+				$subtotal = bcadd($subtotal, $this->get_extended_total_tax_exclusive($item['item_id'], $extended_discounted_amount, $item['extended_quantity'], $item['price'], $item['discount'],$item['discount_type']));
 			}
 			else
 			{
@@ -709,7 +709,7 @@ class Sale_lib
 		$this->CI->session->unset_userdata('sales_rewards_remainder');
 	}
 
-	public function add_item(&$item_id, $quantity = 1, $item_location, $discount = 0.0, $discount_type = 0, $price_mode = PRICE_MODE_STANDARD, $kit_price_option = NULL, $kit_print_option = NULL, $price_override = NULL, $description = NULL, $serialnumber = NULL, $sale_id = NULL, $include_deleted = FALSE, $print_option = NULL, $line = NULL )
+	public function add_item(&$item_id, $quantity = 1, $item_location, $discount = 0.0, $discount_type = 0, $price_mode = PRICE_MODE_STANDARD, $kit_price_option = NULL, $kit_print_option = NULL, $price_override = NULL, $description = NULL, $serialnumber = NULL, $sale_id = NULL, $include_deleted = FALSE, $print_option = NULL, $line = NULL, $pack_quantity = 1)
 	{
 		$item_info = $this->CI->Item->get_info_by_id_or_number($item_id, $include_deleted);
 		//make sure item exists
@@ -724,7 +724,7 @@ class Sale_lib
 		$item_id = $item_info->item_id;
 		$item_type = $item_info->item_type;
 		$stock_type = $item_info->stock_type;
-
+		$extended_quantity = $quantity;		// pack_quantity will be included  in extended quantity
 		if($price_mode == PRICE_MODE_STANDARD)
 		{
 			$price = $item_info->unit_price;
@@ -787,6 +787,7 @@ class Sale_lib
 				if(!$item_info->is_serialized)
 				{
 					$quantity = bcadd($quantity, $items[$updatekey]['quantity']);
+					$extended_quantity  = $quantity * $items[$updatekey]['pack_quantity'];
 				}
 			}
 		}
@@ -825,12 +826,24 @@ class Sale_lib
 			}
 		}
 
-		$total = $this->get_item_total($quantity, $price, $discount, $discount_type);
-		$discounted_total = $this->get_item_total($quantity, $price, $discount, $discount_type, TRUE);
+		$total = $this->get_item_total($extended_quantity, $price, $discount, $discount_type);
+		$discounted_total = $this->get_item_total($extended_quantity, $price, $discount, $discount_type, TRUE);
 
 		if($this->CI->config->item('multi_pack_enabled') == '1')
 		{
 			$item_info->name .= NAME_SEPARATOR . $item_info->pack_name;
+		}
+
+		//Receiving quantity is named as pack quantity in sales
+		if ($item_info->receiving_quantity == 0 || $item_info->receiving_quantity == 1)
+		{
+			$pack_quantity_choices = array(1  => 'x1');
+		}
+		else
+		{
+			$pack_quantity_choices = array(
+				1  => 'x1',
+				to_quantity_decimals($item_info->receiving_quantity) => 'x' . to_quantity_decimals($item_info->receiving_quantity));
 		}
 
 		$attribute_links = $this->CI->Attribute->get_link_values($item_id, 'sale_id', $sale_id, Attribute::SHOW_IN_SALES)->row_object();
@@ -857,6 +870,9 @@ class Sale_lib
 					'in_stock' => $this->CI->Item_quantity->get_item_quantity($item_id, $item_location)->quantity,
 					'price' => $price,
 					'cost_price' => $cost_price,
+					'pack_quantity' => $pack_quantity,
+					'pack_quantity_choices' => $pack_quantity_choices,
+					'extended_quantity' => $extended_quantity,
 					'total' => $total,
 					'discounted_total' => $discounted_total,
 					'print_option' => $print_option_selected,
@@ -873,6 +889,7 @@ class Sale_lib
 		{
 			$line = &$items[$updatekey];
 			$line['quantity'] = $quantity;
+			$line['extended_quantity'] = $extended_quantity;
 			$line['total'] = $total;
 			$line['discounted_total'] = $discounted_total;
 		}
@@ -911,16 +928,16 @@ class Sale_lib
 	public function get_quantity_already_added($item_id, $item_location)
 	{
 		$items = $this->get_cart();
-		$quanity_already_added = 0;
+		$quantity_already_added = 0;
 		foreach($items as $item)
 		{
 			if($item['item_id'] == $item_id && $item['item_location'] == $item_location)
 			{
-				$quanity_already_added+=$item['quantity'];
+				$quantity_already_added+=$item['extended_quantity'];
 			}
 		}
 
-		return $quanity_already_added;
+		return $quantity_already_added;
 	}
 
 	public function get_item_id($line_to_get)
@@ -938,11 +955,12 @@ class Sale_lib
 		return -1;
 	}
 
-	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total=NULL)
+	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $pack_quantity, $discounted_total=NULL)
 	{
 		$items = $this->get_cart();
 		if(isset($items[$line]))
 		{
+			$extended_quantity = $quantity * $pack_quantity;
 			$line = &$items[$line];
 			if($discounted_total != NULL && $discounted_total != $line['discounted_total'])
 			{
@@ -953,13 +971,15 @@ class Sale_lib
 			$line['serialnumber'] = $serialnumber;
 			$line['quantity'] = $quantity;
 			$line['discount'] = $discount;
+			$line['pack_quantity'] = $pack_quantity;
+			$line['extended_quantity'] = $extended_quantity;
 			if(!is_null($discount_type))
 			{
 				$line['discount_type'] = $discount_type;
 			}
 			$line['price'] = $price;
-			$line['total'] = $this->get_item_total($quantity, $price, $discount, $line['discount_type']);
-			$line['discounted_total'] = $this->get_item_total($quantity, $price, $discount, $line['discount_type'], TRUE);
+			$line['total'] = $this->get_item_total($extended_quantity, $price, $discount, $line['discount_type']);
+			$line['discounted_total'] = $this->get_item_total($extended_quantity, $price, $discount, $line['discount_type'], TRUE);
 			$this->set_cart($items);
 		}
 
@@ -1023,7 +1043,7 @@ class Sale_lib
 
 		foreach($this->CI->Sale->get_sale_items_ordered($sale_id)->result() as $row)
 		{
-			$this->add_item($row->item_id, $row->quantity_purchased, $row->item_location, $row->discount, $row->discount_type, PRICE_MODE_STANDARD, NULL, NULL, $row->item_unit_price, $row->description, $row->serialnumber, $sale_id, TRUE, $row->print_option);
+			$this->add_item($row->item_id, $row->quantity_purchased, $row->item_location, $row->discount, $row->discount_type, PRICE_MODE_STANDARD, NULL, NULL, $row->item_unit_price, $row->description, $row->serialnumber, $sale_id, TRUE, $row->print_option, NULL, $row->pack_qty_purchased);
 		}
 
 		foreach($this->CI->Sale->get_sale_payments($sale_id)->result() as $row)
@@ -1111,7 +1131,7 @@ class Sale_lib
 
 		foreach($items as &$item)
 		{
-			$quantity = $item['quantity'];
+			$quantity = $item['extended_quantity'];
 			$price = $item['price'];
 
 			// set a new discount only if the current one is 0
@@ -1133,7 +1153,7 @@ class Sale_lib
 		{
 			if($item['discount'] > 0.0)
 			{
-				$item_discount = $this->get_item_discount($item['quantity'], $item['price'], $item['discount'], $item['discount_type']);
+				$item_discount = $this->get_item_discount($item['extended_quantity'], $item['price'], $item['discount'], $item['discount_type']);
 				$discount = bcadd($discount, $item_discount);
 			}
 		}
@@ -1242,11 +1262,11 @@ class Sale_lib
 		{
 			if($exclude_tax && $this->CI->config->item('tax_included'))
 			{
-				$subtotal = bcadd($subtotal, $this->get_item_total_tax_exclusive($item['item_id'], $item['quantity'], $item['price'], $item['discount'], $item['discount_type'], $include_discount));
+				$subtotal = bcadd($subtotal, $this->get_item_total_tax_exclusive($item['item_id'], $item['extended_quantity'], $item['price'], $item['discount'], $item['discount_type'], $include_discount));
 			}
 			else
 			{
-				$subtotal = bcadd($subtotal, $this->get_item_total($item['quantity'], $item['price'], $item['discount'], $item['discount_type'], $include_discount));
+				$subtotal = bcadd($subtotal, $this->get_item_total($item['extended_quantity'], $item['price'], $item['discount'], $item['discount_type'], $include_discount));
 			}
 		}
 
@@ -1304,7 +1324,7 @@ class Sale_lib
 				{
 					$items[$line]['discount'] = $total_discount;
 					$items[$line]['discount_type'] = $total_discount_type;
-					$items[$line]['discounted_total'] = $this->get_item_total($item['quantity'], $item['price'], $total_discount, $total_discount_type, TRUE);	
+					$items[$line]['discounted_total'] = $this->get_item_total($item['extended_quantity'], $item['price'], $total_discount, $total_discount_type, TRUE);
 					$discount_applied = true;
 					break;
 				}
@@ -1313,7 +1333,7 @@ class Sale_lib
 			}
 			$items[$line]['discount'] = $total_discount;
 			$items[$line]['discount_type'] = $total_discount_type;
-			$items[$line]['discounted_total'] = $this->get_item_total($item['quantity'], $item['price'], $total_discount, $total_discount_type, TRUE);	
+			$items[$line]['discounted_total'] = $this->get_item_total($item['extended_quantity'], $item['price'], $total_discount, $total_discount_type, TRUE);
 			$discount_applied = true;
 		}
 		$this->set_cart($items);
@@ -1327,7 +1347,7 @@ class Sale_lib
 		{
 			$line = $item['line'];
 			$items[$line]['discount'] = 0;
-			$items[$line]['discounted_total'] = $this->get_item_total($item['quantity'], $item['price'], $total_discount, $total_discount_type, TRUE);
+			$items[$line]['discounted_total'] = $this->get_item_total($item['extended_quantity'], $item['price'], 0, 0, TRUE);
 		}
 		$this->set_cart($items);
 	}

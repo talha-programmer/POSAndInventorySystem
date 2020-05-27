@@ -43,7 +43,14 @@ $(document).ready(function()
 	});
 });
 </script>
+<div class="row print_hide">
+    <h4>Important Information</h4>
+    <ul style="margin-left: 20px;">
+        <li>Search the sales by: invoice number, sale id and customer name.</li>
+    </ul>
 
+
+</div>
 <?php $this->load->view('partial/print_receipt', array('print_after_sale'=>false, 'selected_printer'=>'takings_printer')); ?>
 
 <div id="title_bar" class="print_hide btn-toolbar">

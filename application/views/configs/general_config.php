@@ -252,7 +252,7 @@
 				</div>
 			</div>
 
-			<div class="form-group form-group-sm">
+			<div class="form-group form-group-sm hidden"> <?php // Hide the pack items enabling option because I had made many changes in pack items function?>
 				<?php echo form_label($this->lang->line('config_multi_pack_enabled'), 'multi_pack_enabled', array('class' => 'control-label col-xs-2')); ?>
 				<div class='col-xs-1'>
 					<?php echo form_checkbox(array(
@@ -263,7 +263,8 @@
 				</div>
 			</div>
 
-			<div class="form-group form-group-sm">
+
+			<div class="form-group form-group-sm hidden">
 				<?php echo form_label($this->lang->line('config_include_hsn'), 'include_hsn', array('class' => 'control-label col-xs-2')); ?>
 				<div class='col-xs-1'>
 					<?php echo form_checkbox(array(
